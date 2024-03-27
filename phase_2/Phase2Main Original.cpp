@@ -48,7 +48,7 @@ int main(){
 	T2.insert("H",5.2);
 	T2.insert("H",5.3);
 
-	cout << T1.rank("I") << endl;
+	cout << T2.rank("I") << endl;
 	//Should output 11
 
 	cout << T2.remove("H") << endl;
@@ -60,11 +60,17 @@ int main(){
 	cout << T2.duplicates("H") << endl;
 	//Should output 3
 	
+	T2.inorder();
+	//Should output	A B C E F G H H H I K L M\n
+
+	T2.preorder();
+	//Should output "F\n B\n A\n C E\n H K\n G\n I\n L M\n"
+
 	cout << T2.rank("H") << endl;
 	//Should output 7
 	
 	cout << T2.size() << endl;
-	//Should output 14
+	//Should output 13
 	
     two4Tree<int,int> X;
 	for (int i=1;i<1001000;i++) X.insert(i,i);

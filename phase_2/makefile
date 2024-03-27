@@ -50,6 +50,10 @@ phase_2: Phase2Main.cpp two4Tree.cpp
 	mkdir -p build
 	g++ Phase2Main.cpp -O3 -o $(BUILD_DIR)/Phase2Main
 
+phase_2_debug: Phase2Main.cpp two4Tree.cpp 
+	mkdir -p build
+	g++ Phase2Main.cpp -g -o $(BUILD_DIR)/Phase2Main
+
 $(BUILD_DIR)/main_fuzz: fuzz.cpp two4Tree.cpp
 	mkdir -p build
 	$(ALF_BUILD_ENV) afl-c++ fuzz.cpp -o $(BUILD_DIR)/main_fuzz -march=native -O3

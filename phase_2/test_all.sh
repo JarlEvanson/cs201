@@ -1,0 +1,1 @@
+find $1 -not -path $1 | parallel 'echo "{}: " && ./build/fuzz_debug {}'

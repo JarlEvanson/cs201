@@ -1,0 +1,1 @@
+find ramdisk -regex "ramdisk/[a-z]+-wks001/crashes/.+" -not -regex .+README.+ | parallel cp {} crashes/raw/crash{#}

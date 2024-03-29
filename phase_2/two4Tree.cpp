@@ -46,20 +46,17 @@ private:
     size_t start;
     size_t end;
 
-    T nonsense;
-
     T* get(size_t index);
     void grow();
     void shrink();
-    size_t partition(size_t low, size_t high, size_t pivot_index);
 public:
     CircularDynamicArray();
-    CircularDynamicArray(int size);
+    CircularDynamicArray(size_t size);
     CircularDynamicArray(CircularDynamicArray& other);
     CircularDynamicArray& operator=(CircularDynamicArray& other);
     ~CircularDynamicArray();
 
-    T& operator[](int i);
+    T& operator[](size_t i);
 
     void addEnd(T element);
     void addFront(T element);
@@ -69,19 +66,13 @@ public:
 
     void clear();
 
-    T QSelect(int k);
-    void Sort();
-    int linearSearch(T element);
-    int binSearch(T element);
-
     int length();
-    int capacity();
 };
 
 template<typename T>
 CircularDynamicArray<T>::CircularDynamicArray() {
-    this->base = new T[2];
-    this->buffer_size = 2;
+    this->base = NULL;
+    this->buffer_size = 0;
     this->size = 0;
 
     this->start = 0;
@@ -89,9 +80,7 @@ CircularDynamicArray<T>::CircularDynamicArray() {
 }
 
 template<typename T>
-CircularDynamicArray<T>::CircularDynamicArray(int input_size) {
-    size_t size = to_size_t(input_size);
-
+CircularDynamicArray<T>::CircularDynamicArray(size_t size) {
     this->base = new T[size];
     this->buffer_size = size;
     this->size = size;
@@ -102,7 +91,11 @@ CircularDynamicArray<T>::CircularDynamicArray(int input_size) {
 
 template<typename T> 
 CircularDynamicArray<T>::CircularDynamicArray(CircularDynamicArray& other) {
-    this->base = new T[other.buffer_size];
+    if(other.base == NULL) {
+        this->base = NULL;
+    } else {
+        this->base = new T[other.buffer_size];
+    }
     this->buffer_size = other.buffer_size;
     this->size = other.size;
 
@@ -121,7 +114,11 @@ CircularDynamicArray<T>& CircularDynamicArray<T>::operator=(CircularDynamicArray
 
     delete[] this->base; 
 
-    this->base = new T[other.buffer_size];
+    if(other.base == NULL) {
+        this->base = NULL;
+    } else {
+        this->base = new T[other.buffer_size];
+    }
     this->buffer_size = other.buffer_size;
     this->size = other.size;
 
@@ -139,7 +136,7 @@ template<typename T>
 CircularDynamicArray<T>::~CircularDynamicArray() {
     delete[] this->base;
 
-    this->base = nullptr;
+    this->base = NULL;
     this->buffer_size = 0;
     this->size = 0;
 
@@ -148,13 +145,8 @@ CircularDynamicArray<T>::~CircularDynamicArray() {
 }
 
 template<typename T>
-T& CircularDynamicArray<T>::operator[](int i) {
-    if(i < 0 || i >= (int) this->size) {
-        std::cout << "Index out of bounds: Programming error" << std::endl;
-        return this->nonsense;
-    }
-
-    return *this->get(to_size_t(i));
+T& CircularDynamicArray<T>::operator[](size_t i) {
+    return *this->get(i);
 }
 
 template<typename T>
@@ -175,11 +167,11 @@ T* CircularDynamicArray<T>::get(size_t index) {
 template<typename T>
 void CircularDynamicArray<T>::grow() {
     size_t new_buffer_size = this->buffer_size * 2;
+    assert(this->buffer_size == new_buffer_size / 2);
+    
     if(this->buffer_size == 0) {
         new_buffer_size = 2;
     } 
-    
-    assert(this->buffer_size == new_buffer_size / 2);
         
     T* new_ptr = new T[new_buffer_size];
     size_t old_index = this->start;
@@ -262,7 +254,7 @@ void CircularDynamicArray<T>::delFront() {
     this->start = new_front;
     this->size -= 1;
 
-    if(this->size * 4 <= this->capacity() && this->size * 4 >= this->size) {
+    if(this->size * 4 <= this->buffer_size && this->size * 4 >= this->size) {
         this->shrink();
     }
 }
@@ -278,7 +270,7 @@ void CircularDynamicArray<T>::delEnd() {
     this->end = new_end;
     this->size -= 1;
 
-    if(this->size * 4 <= this->capacity() && this->size * 4 >= this->size) {
+    if(this->size * 4 <= this->buffer_size && this->size * 4 >= this->size) {
         this->shrink();
     }
 }
@@ -286,14 +278,14 @@ void CircularDynamicArray<T>::delEnd() {
 template<typename T>
 void CircularDynamicArray<T>::clear() {
     delete[] this->base;
-    this->base = new T[2];
-    this->buffer_size = 2;
+    this->base = NULL;
+    this->buffer_size = 0;
     this->size = 0;
 
     this->start = 0;
     this->end = 0;
 }
-
+/*
 template<typename T> 
 size_t CircularDynamicArray<T>::partition(
     size_t low, 
@@ -451,17 +443,18 @@ int CircularDynamicArray<T>::binSearch(T element) {
     }
 
     return -1;
-}
+}*/
 
 template<typename T>
 int CircularDynamicArray<T>::length() {
     return this->size;
 }
 
+/*
 template<typename T>
 int CircularDynamicArray<T>::capacity() {
     return this->buffer_size;
-}
+}*/
 
 #define ENCODE_CONTROL(element_count, internal) ((((unsigned char) (internal)) << 2) | (((element_count) - 1) & 0x3))
 #define IS_INTERNAL(node) (((node)->control & 0x4) == 0x4)

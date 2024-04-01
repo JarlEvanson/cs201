@@ -1076,17 +1076,26 @@ void TwoFourNode<Key, Value>::inorder(bool* first) {
     if(IS_INTERNAL(this)) {
         for(size_t i = 0; i < EXTRACT_ELEMENT_COUNT(this); i++) {
             this->children[i]->inorder(first);
-            std::cout << ' ' << this->keys[i];
+            for(size_t j = 0; j < this->values[i].length(); j++) {
+                std::cout << ' ' << this->keys[i];
+            }
         }
         this->children[EXTRACT_CHILD_COUNT(this) - 1]->inorder(first);
     } else if(!*first) {
         for(size_t i = 0; i < EXTRACT_ELEMENT_COUNT(this); i++) {
-            std::cout << ' ' << this->keys[i];
+            for(size_t j = 0; j < this->values[i].length(); j++) {
+                std::cout << ' ' << this->keys[i];
+            }
         }
     } else {
         std::cout << this->keys[0];
+        for(size_t j = 1; j < this->values[0].length(); j++) {
+            std::cout << ' ' << this->keys[0];
+        }
         for(size_t i = 1; i < EXTRACT_ELEMENT_COUNT(this); i++) {
-            std::cout << ' ' << this->keys[i];
+            for(size_t j = 0; j < this->values[i].length(); j++) {
+                std::cout << ' ' << this->keys[i];
+            }
         }
         *first = false;
     }

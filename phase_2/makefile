@@ -34,13 +34,13 @@ restart_fuzz:
 			&& tmux split-window -v "make restart_exploit_fuzz" \
 		'
 
+$(BUILD_DIR)/fuzz: fuzz.cpp two4Tree.cpp
+	mkdir -p build
+	g++ fuzz.cpp -O3 -o $(BUILD_DIR)/fuzz
+
 $(BUILD_DIR)/fuzz_debug: fuzz.cpp two4Tree.cpp
 	mkdir -p build
 	g++ fuzz.cpp -g -o $(BUILD_DIR)/fuzz_debug
-
-$(BUILD_DIR)/fuzz_debug_test: fuzz.cpp two4Tree.cpp
-	mkdir -p build
-	g++ fuzz.cpp -g -o $(BUILD_DIR)/fuzz_debug_test 
 
 $(BUILD_DIR)/test: test.cpp two4Tree.cpp
 	mkdir -p build

@@ -41,6 +41,9 @@ int main(){
 	cout << T2.remove("J") << endl;
 	//Should output 0
 	
+	T2.preorder();
+	//Should output "F\n B\n A\n C E\n H L\n G\n I K\n M\n"    remove("J") modifies the tree
+	
 	cout <<T2.rank("G") << endl;
 	//Should output 6
 	
@@ -51,7 +54,7 @@ int main(){
 	cout << T2.rank("I") << endl;
 	//Should output 11
 
-	cout << T2.remove("H") << endl;
+	cout << T2.remove("H"); << endl;
 	//Should output 1
 	
 	cout << *(T2.search("H")) << endl;
@@ -64,7 +67,7 @@ int main(){
 	//Should output	A B C E F G H H H I K L M\n
 
 	T2.preorder();
-	//Should output "F\n B\n A\n C E\n H K\n G\n I\n L M\n"
+	//Should output "F\n B\n A\n C E\n H L\n G\n I K\n M\n"  
 
 	cout << T2.rank("H") << endl;
 	//Should output 7

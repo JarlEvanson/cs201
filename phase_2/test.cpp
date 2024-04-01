@@ -95,6 +95,7 @@ int main(){
     int values[4] = {0,2,3,4};
 
     two4Tree arr_tree(keys, values, 4);
+    two4Tree k(arr_tree);
 
     assert(arr_tree.remove(0) == 1);
     arr_tree.validate();
@@ -104,4 +105,13 @@ int main(){
     arr_tree.validate();
     assert(arr_tree.remove(4) == 1);
     arr_tree.validate();
+
+    assert(k.remove(0) == 1);
+    k.validate();
+    assert(k.remove(2) == 1);
+    k.validate();
+    assert(k.remove(3) == 1);
+    k.validate();
+    assert(k.remove(4) == 1);
+    k.validate();
 }

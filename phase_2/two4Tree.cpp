@@ -11,8 +11,6 @@ void swap_ptr(T* a, T* b) {
 }
 
 size_t to_size_t(int num) {
-    static_assert(sizeof(int) < sizeof(size_t));
-
     assert(num >= 0);
 
     return (size_t) num;
@@ -448,7 +446,7 @@ FindResult<Key, Value> TwoFourNode<Key, Value>::find(Key key) {
 
 template<typename Key, typename Value>
 Value* TwoFourNode<Key, Value>::search(Key key) {
-    FindResult result = this->find(key);
+    FindResult<Key, Value> result = this->find(key);
 
     if(result.node == NULL) {
         return NULL;
@@ -982,7 +980,7 @@ int TwoFourNode<Key, Value>::remove(Key key) {
 
 template<typename Key, typename Value>
 int TwoFourNode<Key, Value>::rank(Key key) {
-    FindResult result = this->find(key);
+    FindResult<Key, Value> result = this->find(key);
 
     if(result.node == NULL) {
         return 0;
@@ -1043,7 +1041,7 @@ Key TwoFourNode<Key, Value>::select(int pos) {
 
 template<typename Key, typename Value>
 int TwoFourNode<Key, Value>::duplicates(Key key) {
-    FindResult result = this->find(key);
+    FindResult<Key, Value> result = this->find(key);
 
     if(result.node == NULL) {
         return 0;
@@ -1228,7 +1226,7 @@ two4Tree<Key, Value>::two4Tree(two4Tree& other) {
         return;
     }
 
-    this->top_node = new TwoFourNode(*other.top_node);
+    this->top_node = new TwoFourNode<Key, Value>(*other.top_node);
 }
 
 template<typename Key, typename Value>
@@ -1244,7 +1242,7 @@ two4Tree<Key, Value>& two4Tree<Key, Value>::operator=(two4Tree& other) {
         return *this;
     }
 
-    this->top_node = new TwoFourNode(*other.top_node);
+    this->top_node = new TwoFourNode<Key, Value>(*other.top_node);
     return *this;
 }
 
@@ -1270,7 +1268,7 @@ Value* two4Tree<Key, Value>::search(Key key) {
 template<typename Key, typename Value>
 void two4Tree<Key, Value>::insert(Key key, Value value) {
     if(this->top_node == NULL) {
-        this->top_node = new TwoFourNode(key, value);
+        this->top_node = new TwoFourNode<Key, Value>(key, value);
     } else {
         this->top_node->insert(key, value);
     }

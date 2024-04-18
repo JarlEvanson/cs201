@@ -175,6 +175,41 @@ class BHeap {
         } while(current != tree);
     }
 
+    static BHeapNode<T>* copy(BHeapNode<T>* other) {
+        if(other == NULL) {
+            return NULL;
+        }
+
+        BHeapNode<T>* origin = new BHeapNode<T>();
+
+        BHeapNode<T>* other_current = other;
+        BHeapNode<T>* this_current = origin;
+
+        while(1) {
+            this_current->key = other_current->key;
+            this_current->degree = other_current->degree;
+            
+            this_current->child = BHeap<T>::copy(other_current->child);
+
+            other_current = other_current->right;
+
+            if(other_current == other) {
+                break;
+            }
+
+            BHeapNode<T>* tmp = new BHeapNode<T>();
+            tmp->left = this_current;
+
+            this_current->right = tmp;
+            this_current = tmp;
+        }
+
+        this_current->right = origin;
+        origin->left = this_current;
+
+        return origin;
+    }
+
 public:
     BHeap() {
         this->size = 0;
@@ -194,6 +229,30 @@ public:
         }
 
         this->consolidate(this->minimum_heap);
+    }
+
+    BHeap(BHeap<T>& other) {
+        this->minimum_heap = BHeap<T>::copy(other.minimum_heap);
+
+        this->arr = NULL;
+        this->capacity = 0;
+
+        this->size = other.size;
+    }
+
+    BHeap<T>& operator=(BHeap<T>& other) {
+        if(this == &other) {
+            return other;
+        }
+
+        this->minimum_heap = BHeap<T>::copy(other.minimum_heap);
+
+        this->arr = NULL;
+        this->capacity = 0;
+
+        this->size = other.size;
+
+        return *this;
     }
 
     ~BHeap() {

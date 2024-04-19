@@ -29,8 +29,10 @@ restart_fuzz:
 		'
 
 run_tests: $(BUILD_DIR)/test $(BUILD_DIR)/Phase3Main
-	@./$(BUILD_DIR)/test || echo "Test failed"
-	@./$(BUILD_DIR)/Phase3Main | diff Phase3MainOutput.txt - || echo "Phase3Main failed"
+	@echo -n "Running ./build/test: "
+	@./$(BUILD_DIR)/test || echo "failed" && echo "succeeded"
+	@echo -n "Running ./build/Phase3Main: "
+	@./$(BUILD_DIR)/Phase3Main | diff Phase3MainOutput.txt - || echo "failed" && echo "succeeded"
 
 $(BUILD_DIR)/test: test.cpp BHeap.cpp $(BUILD_DIR)
 	g++ test.cpp -o $(BUILD_DIR)/test -O3

@@ -354,6 +354,14 @@ public:
     }
 
     void merge(BHeap<T> &other) {
+        if(this == &other) {
+            this->~BHeap();
+
+            this->size = 0;
+            this->minimum_heap = NULL;
+            return;
+        }
+
         BHeapNode<T>* left_self = this->minimum_heap->left;
         BHeapNode<T>* left_other = other.minimum_heap;
 

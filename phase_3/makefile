@@ -28,8 +28,21 @@ restart_fuzz:
 			&& tmux split-window -v "make restart_exploit_fuzz" \
 		'
 
+run_tests: $(BUILD_DIR)/test $(BUILD_DIR)/Phase3Main
+	./$(BUILD_DIR)/test
+	./$(BUILD_DIR)/Phase3Main
+
+$(BUILD_DIR)/test: test.cpp BHeap.cpp $(BUILD_DIR)
+	g++ test.cpp -o $(BUILD_DIR)/test -O3
+
+$(BUILD_DIR)/Phase3Main: Phase3Main.cpp BHeap.cpp $(BUILD_DIR)
+	g++ Phase3Main.cpp -o $(BUILD_DIR)/Phase3Main -O3
+
 $(BUILD_DIR):
 	mkdir -p build
+
+$(BUILD_DIR)/debug_fuzz: fuzz.cpp BHeap.cpp $(BUILD_DIR)
+	g++ fuzz.cpp -o $(BUILD_DIR)/debug_fuzz -g -std=c23
 
 $(BUILD_DIR)/main_fuzz: fuzz.cpp BHeap.cpp $(BUILD_DIR)
 	$(ALF_BUILD_ENV) afl-c++ fuzz.cpp -o $(BUILD_DIR)/main_fuzz -march=native -O3
@@ -84,3 +97,7 @@ restart_explore_fuzz: $(BUILD_DIR)/main_fuzz
 
 restart_exploit_fuzz: $(BUILD_DIR)/main_fuzz
 	AFL_FAST_CAL=1 AFL_CMPLOG_ONLY_NEW=1 $(AFL_SETTINGS) afl-fuzz -i - -o ramdisk -M exploit-wks001 -P exploit -a binary -- ./$(BUILD_DIR)/main_fuzz
+
+clean:
+	rm -rf build
+	rm -rf ramdisk

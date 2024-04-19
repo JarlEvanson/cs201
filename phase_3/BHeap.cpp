@@ -231,7 +231,7 @@ public:
         this->consolidate(this->minimum_heap);
     }
 
-    BHeap(BHeap<T>& other) {
+    BHeap(const BHeap<T>& other) {
         this->minimum_heap = BHeap<T>::copy(other.minimum_heap);
 
         this->arr = NULL;
@@ -240,9 +240,9 @@ public:
         this->size = other.size;
     }
 
-    BHeap<T>& operator=(BHeap<T>& other) {
+    BHeap<T>& operator=(const BHeap<T>& other) {
         if(this == &other) {
-            return other;
+            return *this;
         }
 
         this->minimum_heap = BHeap<T>::copy(other.minimum_heap);

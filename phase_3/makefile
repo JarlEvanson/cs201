@@ -30,21 +30,21 @@ restart_fuzz:
 
 run_tests: $(BUILD_DIR)/test $(BUILD_DIR)/Phase3Main
 	@echo -n "Running ./build/test: "
-	@./$(BUILD_DIR)/test || echo "failed" && echo "succeeded"
+	@./$(BUILD_DIR)/test && echo "succeeded" || echo "failed"
 	@echo -n "Running ./build/Phase3Main: "
-	@./$(BUILD_DIR)/Phase3Main | diff Phase3MainOutput.txt - || echo "failed" && echo "succeeded"
+	@./$(BUILD_DIR)/Phase3Main | diff Phase3MainOutput.txt - && echo "succeeded" || echo "failed"
 
 $(BUILD_DIR)/test: test.cpp BHeap.cpp $(BUILD_DIR)
-	g++ test.cpp -o $(BUILD_DIR)/test -O3
+	g++ test.cpp -o $(BUILD_DIR)/test -g
 
 $(BUILD_DIR)/Phase3Main: Phase3Main.cpp BHeap.cpp $(BUILD_DIR)
-	g++ Phase3Main.cpp -o $(BUILD_DIR)/Phase3Main -O3
+	g++ Phase3Main.cpp -o $(BUILD_DIR)/Phase3Main -g
 
 $(BUILD_DIR):
 	mkdir -p build
 
 $(BUILD_DIR)/debug_fuzz: fuzz.cpp BHeap.cpp $(BUILD_DIR)
-	g++ fuzz.cpp -o $(BUILD_DIR)/debug_fuzz -g -std=c23
+	g++ fuzz.cpp -o $(BUILD_DIR)/debug_fuzz -g
 
 $(BUILD_DIR)/main_fuzz: fuzz.cpp BHeap.cpp $(BUILD_DIR)
 	$(ALF_BUILD_ENV) afl-c++ fuzz.cpp -o $(BUILD_DIR)/main_fuzz -march=native -O3

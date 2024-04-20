@@ -1,7 +1,5 @@
-#include <cstddef>
 #include <cassert>
-#include <cstdint>
-
+#include <cstddef>
 #include <iostream>
 
 template<typename T>
@@ -10,7 +8,7 @@ struct BHeapNode {
     BHeapNode<T>* left;
     BHeapNode<T>* right;
     BHeapNode<T>* child;
-    size_t degree;
+    unsigned long degree;
 };
 
 template<typename T>
@@ -18,10 +16,10 @@ class BHeap {
     // Pointer to minimum node.
     BHeapNode<T>* minimum_heap;
     // Number of nodes in the BHeap
-    size_t size;
+    unsigned long size;
 
     // Capacity of the consolidate array
-    size_t capacity;
+    unsigned long capacity;
     // The consolidate array
     BHeapNode<T>** arr;
 
@@ -55,9 +53,9 @@ class BHeap {
         }
 
         // Calculate the number of slots we need for the helper array.
-        size_t power_of_two = 0;
+        unsigned long power_of_two = 0;
         { 
-            size_t current = this->size; 
+            unsigned long current = this->size; 
             while(current != 0) { 
                 current >>= 1; power_of_two += 1; } 
         }
@@ -224,7 +222,7 @@ public:
         this->capacity = 0;
         this->arr = NULL;
 
-        for(size_t i = 0; i < size; i++) {
+        for(unsigned long i = 0; i < size; i++) {
             this->insert(keys[i]);
         }
 
@@ -362,11 +360,20 @@ public:
             return;
         }
 
-        BHeapNode<T>* left_self = this->minimum_heap->left;
-        BHeapNode<T>* left_other = other.minimum_heap;
+        BHeapNode<T> *left_self, *left_other, *right_self, *right_other;
 
-        BHeapNode<T>* right_self = this->minimum_heap;
-        BHeapNode<T>* right_other = other.minimum_heap->left;
+        if(this->minimum_heap == NULL) {
+            this->minimum_heap = other.minimum_heap;
+            goto end;
+        } else if(other.minimum_heap == NULL) {
+            goto end;
+        }
+
+        left_self = this->minimum_heap->left;
+        left_other = other.minimum_heap;
+
+        right_self = this->minimum_heap;
+        right_other = other.minimum_heap->left;
 
         left_self->right = left_other;
         left_other->left = left_self;
@@ -377,6 +384,9 @@ public:
         if(other.minimum_heap->key < this->minimum_heap->key) {
             this->minimum_heap = other.minimum_heap;
         }
+
+    end:
+        this->size += other.size;
 
         other.size = 0;
         other.minimum_heap = NULL;
@@ -400,14 +410,10 @@ public:
     }
 
     bool isEmpty() {
-        return this->minimum_heap == NULL;
+        return this->size == 0;
     }
 
-    void printRootList() {
-        std::cout << "PRINT KEY START\n";
-
-        this->printKey();
-
-        std::cout << "PRINT KEY END\n";
+    unsigned long element_count() {
+        return this->size;
     }
 };

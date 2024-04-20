@@ -8,6 +8,7 @@
 #include <limits.h>
 #include <stdlib.h>
 #include <cassert>
+#include <cstdint>
 
 #include <vector>
 #include <queue>
@@ -71,6 +72,8 @@ int main() {
                         | (((uint32_t) buf[byte_index * sizeof(uint32_t) + 2]) << 16)
                         | (((uint32_t) buf[byte_index * sizeof(uint32_t) + 3]) << 24);
 
+                    std::cout << "Inserting " << value << " into " << heap_index << '\n';
+
                     byte_index += 4;
 
                     heaps[heap_index].insert(value);
@@ -80,9 +83,10 @@ int main() {
 
                     break;
                 case 1:
-                    if(heaps[heap_index].isEmpty()) {
+                    if(comparison_heaps[heap_index].empty()) {
                         continue;
                     }
+                    std::cout << "Extracting minimum from " << heap_index << '\n';
 
                     assert(heaps[heap_index].extractMin() == comparison_heaps[heap_index].top());
                     comparison_heaps[heap_index].pop();
@@ -98,23 +102,35 @@ int main() {
                         | (((uint32_t) buf[byte_index * sizeof(uint32_t) + 2]) << 16)
                         | (((uint32_t) buf[byte_index * sizeof(uint32_t) + 3]) << 24)) % heaps.size();
 
+                    std::cout << "Merging " << other_heap << " into " << heap_index << '\n';
+
                     byte_index += 4;
 
                     heaps[heap_index].merge(heaps[other_heap]);
                     {
-                        while(!comparison_heaps[other_heap].empty()) {
-                            comparison_heaps[heap_index].push(comparison_heaps[other_heap].top());
-                            comparison_heaps[other_heap].pop();
+                        if(heap_index != other_heap) {
+                            while(!comparison_heaps[other_heap].empty()) {
+                                comparison_heaps[heap_index].push(comparison_heaps[other_heap].top());
+                                comparison_heaps[other_heap].pop();
+                            }
+                        } else {
+                            while(!comparison_heaps[heap_index].empty()) comparison_heaps[heap_index].pop();
                         }
+                        
                     }
 
-                    if(heaps[heap_index].isEmpty()) {
+                    assert(heaps[other_heap].element_count() == 0 && heaps[other_heap].element_count() == comparison_heaps[other_heap].size());
+                    assert(heaps[heap_index].element_count() == comparison_heaps[heap_index].size());
+                    if(heaps[heap_index].element_count() == 0) {
                         continue;
                     }
                     assert(heaps[heap_index].peekKey() == comparison_heaps[heap_index].top());
+                    assert(heaps[other_heap].isEmpty());
 
                     break;
                 case 3:
+                    std::cout << "Copying " << heap_index << '\n';
+
                     heaps.push_back(heaps[heap_index]);
                     comparison_heaps.push_back(comparison_heaps[heap_index]);
 
